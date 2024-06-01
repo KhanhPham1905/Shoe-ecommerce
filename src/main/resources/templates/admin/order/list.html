@@ -43,8 +43,8 @@
         </header>
         <div class="card-body">
             <div class="row">
-                <div class="col-sm-6">
-                    <div class="mb-3">
+                <div class="col-sm-7">
+                    <div class="mb-4">
                         <a href="/admin/orders/create" id="addToTable" class="btn btn-primary">Thêm mới đơn hàng <i
                                 class="fas fa-plus"></i></a>
                         <a href="/admin/orders" class="btn btn-primary">Refresh <i
@@ -64,6 +64,7 @@
                     <th width="20%">Sản phẩm</th>
                     <th>Ngày tạo</th>
                     <th>Ngày sửa</th>
+                    <th>Thao tác</th>
                 </tr>
                 <tr>
                 <tr class="heading-search">
@@ -98,6 +99,7 @@
                         </th>
                         <th></th>
                         <th></th>
+
                         <input type="hidden" name="page" id="page">
                     </form>
                 </tr>
@@ -124,6 +126,10 @@
                         </td>
                         <td>
                             <span th:text="${#dates.format(order.modifiedAt, 'dd-MM-yyyy HH:mm')}"></span>
+                        </td>
+                        <td class="actions">
+                            <a th:href="@{/admin/orders/update/{id}(id=${order.id})}" class="on-default edit-row"><i class="fas fa-pencil-alt"></i></a>
+                            <a href="#" th:data-id="${order.id}" class="on-default remove-row delete-product"><i class="far fa-trash-alt"></i></a>
                         </td>
                     </tr>
                 </th:block>
