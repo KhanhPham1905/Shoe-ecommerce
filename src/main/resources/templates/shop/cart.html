@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/layout :: main-fragment(
+                                                                     ~{:: title},
+                                                                    'header',
+                                                                    'footer',
+                                                                     ~{:: #css-resources},
+                                                                     ~{:: #js-resources},
+                                                                     ~{:: #main-content}
+                                                                    )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Thông tin đơn hàng</title>
+    <th:block id="css-resources">
+        <link rel="stylesheet" th:href="@{/shop/css/custom.css}">
+        <link rel="stylesheet" th:href="@{/shop/css/order-detail.css}">
+    </th:block>
+</head>
+<body>
+
+<main id="main-content" class="container">
+    <section class="section-pagetop bg-light">
+        <div class="container">
+            <h2 class="title-page">Giỏ hàng</h2>
+        </div> <!-- container.// -->
+    </section> <!-- section-pagetop.// -->
+    <section class="section-content padding-y">
+        <div class="container">
+            <div class="row">
+                <p>
+                    Vui lòng <a th:href="@{/signin}">đăng nhập</a> để sử dụng chức năng giỏ hàng.
+                </p>
+            </div> <!-- row.// -->
+        </div> <!-- container -->
+    </section> <!-- section-content.// -->
+
+    <section class="section-content padding-y" >
+        <div class="container">
+
+            <div class="row">
+
+                <main class="col-lg-9 mb-lg-0 mb-3">
+
+                    <div class="card">
+
+                        <div id="cart-table"></div>
+
+                        <div class="card-body border-top">
+                            <div class="table-responsive">
+                                <table class="cart-table table table-borderless">
+                                    <thead class="text-muted">
+                                    <tr class="small text-uppercase">
+                                        <th scope="col" style="min-width: 280px;">Sản phẩm</th>
+                                        <th scope="col" style="min-width: 150px;">Giá</th>
+                                        <th scope="col" style="min-width: 150px;">Số lượng</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="orderItem : ${orderItems}">
+                                        <td>
+                                            <figure class="itemside">
+                                                <div class="float-start me-3">
+                                                    <img width="80" height="80"
+                                                         th:src="${#strings.isEmpty(orderItem.product.imageName) ? ${pageContext.request.contextPath}/img/280px.png : ${pageContext.request.contextPath}/image/${orderItem.product.imageName}}"
+                                                         alt="280px.png">
+                                                </div>
+                                                <figcaption class="info">
+                                                    <a th:href="@{${pageContext.request.contextPath}/product(id=${orderItem.product.id})}"
+                                                       target="_blank" th:text="${orderItem.product.name}"></a>
+                                                </figcaption>
+                                            </figure>
+                                        </td>
+                                        <td>
+                                            <div class="price-wrap">
+                                                <div th:if="${orderItem.discount == 0}">
+                                                    <span class="price" th:text="${#numbers.formatDecimal(orderItem.price, 0)}">₫</span>
+                                                </div>
+                                                <div th:unless="${orderItem.discount == 0}">
+                                                    <div>
+                                <span class="price"
+                                      th:text="${#numbers.formatDecimal(orderItem.price * (100 - orderItem.discount) / 100, 0)}">₫</span>
+                                                        <span class="ms-2 badge bg-info"
+                                                              th:text="'-' + ${#numbers.formatDecimal(orderItem.discount, 0)} + '%'"></span>
+                                                    </div>
+                                                    <small class="text-muted text-decoration-line-through"
+                                                           th:text="${#numbers.formatDecimal(orderItem.price, 0)}">₫</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td th:text="${orderItem.quantity}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button type="button" class="btn btn-primary float-end" id="checkoutBtn" th:disabled="${true}">Đặt hàng</button>
+                            <a th:href="@{/}" class="btn btn-light">Tiếp tục mua sắm</a>
+                        </div> <!-- card-body.// -->
+
+                    </div> <!-- card.// -->
+                </main> <!-- col.// -->
+
+                <aside class="col-lg-3">
+
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <p class="card-title">Hình thức giao hàng</p>
+                            <form>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="delivery-method" id="delivery-method-1" value="1" th:disabled="${true}">
+                                    <label class="form-check-label" for="delivery-method-1">Giao tiêu chuẩn</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="delivery-method" id="delivery-method-2" value="2" th:disabled="${true}">
+                                    <label class="form-check-label" for="delivery-method-2">Giao nhanh</label>
+                                </div>
+                            </form>
+                        </div> <!-- card-body.// -->
+                    </div> <!-- card.// -->
+
+                    <div class="card">
+                        <div class="card-body">
+                            <dl class="row mb-0">
+                                <dt class="col-xxl-6 col-lg-12 col-6">Tạm tính:</dt>
+                                <dd class="col-xxl-6 col-lg-12 col-6 text-end mb-3"><span id="temp-price">0</span>₫</dd>
+                                <dt class="col-xxl-6 col-lg-12 col-6">Phí vận chuyển:</dt>
+                                <dd class="col-xxl-6 col-lg-12 col-6 text-end mb-3"><span id="delivery-price">0</span>₫</dd>
+                                <dt class="col-xxl-6 col-lg-12 col-6">Tổng cộng:</dt>
+                                <dd class="col-xxl-6 col-lg-12 col-6 text-end mb-3"><strong><span id="total-price">0</span>₫</strong></dd>
+                            </dl>
+                        </div> <!-- card-body.// -->
+                    </div> <!-- card.// -->
+
+                </aside> <!-- col.// -->
+            </div> <!-- row.// -->
+        </div> <!-- container -->
+    </section> <!-- section-content.// -->
+</main>
+</body>
+</html>
